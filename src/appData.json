@@ -1,0 +1,14 @@
+{
+    "name": "abc",
+    "city": "Bengaluru",
+    "age": 24,
+    "details": [],
+    "qualification": "",
+    "occupation": "",
+    "hasVehicle": false,
+    "totalVehicles": 0,
+    "others": {
+        "test1": "test value1",
+        "test2": "test value2"
+    }
+}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ConverterContainer } from './components/converter-container';
+import { ConverterContainer } from './components';
 
 function App() {
   return (

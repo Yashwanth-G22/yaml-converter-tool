@@ -1,4 +1,5 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
+import yaml from 'js-yaml';
 import { ConverterForm } from "./converter-form";
 import jsonData from '../appData.json';
 
@@ -6,12 +7,22 @@ export const ConverterContainer = () => {
 
     const [fieldValues, setFieldValues] = useState<{ [key: string]: any }>(jsonData);
 
-    const onSubmit = useCallback(() => (console.log(fieldValues)), [fieldValues]);
+    function jsonToYaml() {
+        console.log('yamlConverter is working')
+        try {
+            const yamlString = yaml.dump(fieldValues);
+            console.log(yamlString);
+            return yamlString;
+        }
+        catch (err) {
+            console.log(err)
+        }
+    }
 
     return (
         <div>
-            <ConverterForm jsonData={jsonData} setFieldValues={setFieldValues} />
-            <input type="submit" value="Submit" onClick={onSubmit} />
+            <ConverterForm jsonData={jsonData} setFieldValues={setFieldValues as any} />
+            <input type="submit" value="Submit" onClick={jsonToYaml} />
         </div>
     )
 };

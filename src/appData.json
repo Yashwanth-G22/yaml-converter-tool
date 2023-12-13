@@ -2,7 +2,10 @@
     "name": "abc",
     "city": "Bengaluru",
     "age": 24,
-    "details": [],
+    "details": [
+        "test",
+        "work"
+    ],
     "qualification": "",
     "occupation": "",
     "hasVehicle": false,

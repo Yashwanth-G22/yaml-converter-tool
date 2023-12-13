@@ -30,7 +30,7 @@ export const ConverterForm = memo(({ setFieldValues, jsonData }: { setFieldValue
             updateFieldValue(e.target.name, Number(e.target.value))
         }
         else if (e.target.type === 'checkbox') {
-            updateFieldValue(e.target.name, Boolean(e.target.value))
+            updateFieldValue(e.target.name, Boolean(e.target.checked))
         }
         else {
             updateFieldValue(e.target.name, e.target.value)

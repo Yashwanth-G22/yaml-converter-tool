@@ -3,7 +3,9 @@
     "city": "Bengaluru",
     "age": 24,
     "details": [
-        "element1", "element2" ,"element3"
+        "element1",
+        "element2",
+        "element3"
     ],
     "qualification": "1st std",
     "occupation": "President",
@@ -11,11 +13,7 @@
     "totalVehicles": 100,
     "others": {
         "test1": "test value1",
-        "test2": "test value2",
-        "sample3": {
-            "objElement1": "",
-            "objElement2": true,
-            "numValue": 44
-        }
+        "test2": 456,
+        "sample3": false
     }
 }

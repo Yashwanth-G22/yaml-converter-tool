@@ -1,40 +1,35 @@
 import React, { memo, useCallback, useState } from 'react';
-import { getInputType } from './form-utils';
+import { getPrimaryFormField } from './form-utils';
 
-export const getPrimaryFormField = (value: any, props: {}) => {
-    if (getInputType(value) === 'text') {
-        return <input type="text" {...props} />
-    }
-    if (getInputType(value) === 'number') {
-        return <input type="number" {...props} />
-    }
-    if (getInputType(value) === 'checkbox') {
-        return <input type="checkbox" {...props} />
-    }
-    return null;
-}
+const getFieldValue = (e: any) => {
+    const { target: { value, checked, type } } = e;
+    return (type === 'checkbox') ? checked : value
+};
 
-export const CustomField = memo(({ item, setCustomFieldValues }: { item: any, setCustomFieldValues: any }) => {
+export const CustomField = memo(({ item, setFieldValues }: { item: any, setFieldValues: any }) => {
 
-    const [isEditable, setEditable] = useState<boolean>(false)
+    const [hidden, setHidden] = useState<boolean>(true)
     const [key, value] = item;
 
-    const onArrayItemChange = useCallback((e: any) => (
-        setCustomFieldValues((preState: {}) => ({
-            ...preState,
-            [key]: preState[key as keyof typeof preState] ? [...preState[key as keyof typeof preState], e.target.value] : [e.target.value]
-        }))
-    ), [key, setCustomFieldValues]);
+    const onArrayItemChange = useCallback((e: any, index: number) => {
+        setFieldValues((preState: {}) => {
+            const newArr: any[] = [...preState[key as keyof typeof preState]];
+            newArr[index] = getFieldValue(e);
+            return {
+                ...preState, [key]: newArr
+            }
+        })
+    }, [key, setFieldValues]);
 
     const onObjectItemChange = useCallback((e: any) => (
-        setCustomFieldValues((preState: {}) => ({
-            ...preState, [key]: { ...preState[key as keyof typeof preState] as {}, [e.target.name]: e.target.value }
+        setFieldValues((preState: {}) => ({
+            ...preState, [key]: { ...preState[key as keyof typeof preState] as {}, [e.target.name]: getFieldValue(e) }
         }))
-    ), [key, setCustomFieldValues]);
+    ), [key, setFieldValues]);
 
     const renderArrayItem = useCallback((element: any, index: number) => (
         <React.Fragment key={index}>
-            {getPrimaryFormField(element, { defaultValue: element, name: element, onChange: onArrayItemChange })}
+            {getPrimaryFormField(element, { defaultValue: element, name: element, onChange: (e: any) => onArrayItemChange(e, index) })}
         </React.Fragment>
     ), [onArrayItemChange]);
 
@@ -60,13 +55,13 @@ export const CustomField = memo(({ item, setCustomFieldValues }: { item: any, se
         return Object.entries(value).map(renderObjectItem)
     }, [renderArrayItem, renderObjectItem, value]);
 
-    const onClick = useCallback(() => (setEditable(!isEditable)), [isEditable]);
+    const onClick = useCallback(() => (setHidden(!hidden)), [hidden]);
 
     return (
         <>
             <button onClick={onClick}>Update Fields</button>
             {
-                isEditable ? renderForm() : null
+                hidden ? null : renderForm()
             }
         </>
     )

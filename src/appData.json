@@ -4,7 +4,7 @@
     "age": 24,
     "details": [
         "element1",
-        "element2",
+        true,
         "element3"
     ],
     "qualification": "1st std",

@@ -1,25 +1,25 @@
-import { memo, useCallback } from 'react';
-import { IITems, formItems } from './items';
+import React, { memo, useCallback } from 'react';
 import { StyledDiv, StyledWrapper } from './styles';
+import { getInputType } from '../utils';
 
-const getInputType = (value: any) => {
-    if (typeof (value) === 'string') {
-        return 'text';
+const getFormField = (value: any, props: {}) => {
+    if (getInputType(value) === 'text') {
+        return <input type="text" {...props} />
     }
-    if (typeof (value) === 'boolean') {
-        return 'checkbox';
+    if (getInputType(value) === 'number') {
+        return <input type="number" {...props} />
     }
-    if (typeof (value) === 'number') {
-        return 'number';
+    if (getInputType(value) === 'checkbox') {
+        return <input type="checkbox" {...props} />
     }
+    if (Array.isArray(value)) {
+        return <textarea cols={30} rows={10} {...props} />
+    }
+    if (typeof (value) === 'object' && !Array.isArray(value)) {
+        return <textarea cols={30} rows={15} {...props} />
+    }
+    return null;
 };
-
-const getFieldProps = (key: string, value: any) => {
-    if (typeof (value) === 'boolean') {
-        return { defaultChecked: value, name: key }
-    }
-    return { defaultValue: value, name: key }
-}
 
 export const ConverterForm = memo(({ setFieldValues, jsonData }: { setFieldValues: any, jsonData: {} }) => {
 
@@ -41,6 +41,22 @@ export const ConverterForm = memo(({ setFieldValues, jsonData }: { setFieldValue
         setFieldValues((preState: {}) => ({ ...preState, [e.target.name]: e.target.value }));
     }, [setFieldValues]);
 
+    const getFieldProps = useCallback((key: string, value: any) => {
+        const commonProps = { defaultValue: value, name: key }
+
+        if (typeof (value) === 'boolean') {
+            return { defaultChecked: value, name: key, onChange }
+        }
+        if (typeof (value) === 'object' && !Array.isArray(value)) {
+            return { ...commonProps, onChange: onTextAreaChange }
+        }
+        if (typeof (Array.isArray(value))) {
+            return { ...commonProps, onChange: onTextAreaChange }
+        }
+        return { ...commonProps, onChange }
+
+    }, [onChange, onTextAreaChange]);
+
     const renderFormItem = useCallback((item: [key: string, value: any]) => {
         const [key, value] = item;
         const fieldProps = getFieldProps(key, value);
@@ -49,12 +65,11 @@ export const ConverterForm = memo(({ setFieldValues, jsonData }: { setFieldValue
             <StyledDiv key={key}>
                 <label htmlFor="item_name">{key}</label>
                 {
-                    typeof (value) === 'object' ? <textarea name={key} cols={30} rows={10} defaultValue={String(value)} onChange={onTextAreaChange}></textarea>
-                        : <input type={getInputType(value)} {...fieldProps} onChange={onChange} />
+                    getFormField(value, fieldProps)
                 }
             </StyledDiv>
         );
-    }, [onChange, onTextAreaChange]);
+    }, [getFieldProps]);
 
     return (
         <StyledWrapper>

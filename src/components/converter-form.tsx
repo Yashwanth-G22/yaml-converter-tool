@@ -1,45 +1,48 @@
-import { memo, useCallback } from 'react';
-import { IITems, formItems } from './items';
+import React, { memo, useCallback, useState } from 'react';
 import { StyledDiv, StyledWrapper } from './styles';
+import { CustomField } from './custom-field';
+import { getInputType } from './form-utils';
 
-const getInputType = (value: any) => {
-    if (typeof (value) === 'string') {
-        return 'text';
+const getFormField = (item: any, props: {}, setCustomFieldValues: any) => {
+    const [key, value] = item;
+    if (getInputType(value) === 'text') {
+        return <input type="text" {...props} />
     }
-    if (typeof (value) === 'boolean') {
-        return 'checkbox';
+    if (getInputType(value) === 'number') {
+        return <input type="number" {...props} />
     }
-    if (typeof (value) === 'number') {
-        return 'number';
+    if (getInputType(value) === 'checkbox') {
+        return <input type="checkbox" {...props} />
     }
+    return <CustomField item={item} setCustomFieldValues={setCustomFieldValues} key={key} />
 };
 
-const getFieldProps = (key: string, value: any) => {
-    if (typeof (value) === 'boolean') {
-        return { defaultChecked: value, name: key }
-    }
-    return { defaultValue: value, name: key }
-}
-
 export const ConverterForm = memo(({ setFieldValues, jsonData }: { setFieldValues: any, jsonData: {} }) => {
+
+    const [customFieldValues, setCustomFieldValues] = useState<{ [key: string]: {} }>({});
 
     const updateFieldValue = useCallback((name: string, value: any) => (setFieldValues((preState: {}) => ({ ...preState, [name]: value }))), [setFieldValues]);
 
     const onChange = useCallback((e: any) => {
-        if (e.target.type === 'number') {
-            updateFieldValue(e.target.name, Number(e.target.value))
+        if (e.target.type === 'number' || e.target.type === 'text') {
+            updateFieldValue(e.target.name, e.target.value)
         }
         else if (e.target.type === 'checkbox') {
             updateFieldValue(e.target.name, Boolean(e.target.checked))
         }
         else {
-            updateFieldValue(e.target.name, e.target.value)
+            setFieldValues((preState: {}) => (
+                {
+                    ...preState,
+                    [e.target.name]: customFieldValues[e.target.name]
+                }
+            ));
         }
-    }, [updateFieldValue]);
+    }, [customFieldValues, setFieldValues, updateFieldValue]);
 
-    const onTextAreaChange = useCallback((e: any) => {
-        setFieldValues((preState: {}) => ({ ...preState, [e.target.name]: e.target.value }));
-    }, [setFieldValues]);
+    const getFieldProps = useCallback((key: string, value: any) => (
+        (typeof (value) === 'boolean') ? { defaultChecked: value, name: key, onChange } : { defaultValue: value, name: key, onChange }
+    ), [onChange]);
 
     const renderFormItem = useCallback((item: [key: string, value: any]) => {
         const [key, value] = item;
@@ -49,12 +52,11 @@ export const ConverterForm = memo(({ setFieldValues, jsonData }: { setFieldValue
             <StyledDiv key={key}>
                 <label htmlFor="item_name">{key}</label>
                 {
-                    typeof (value) === 'object' ? <textarea name={key} cols={30} rows={10} defaultValue={String(value)} onChange={onTextAreaChange}></textarea>
-                        : <input type={getInputType(value)} {...fieldProps} onChange={onChange} />
+                    getFormField(item, fieldProps, setCustomFieldValues)
                 }
             </StyledDiv>
         );
-    }, [onChange, onTextAreaChange]);
+    }, [getFieldProps]);
 
     return (
         <StyledWrapper>

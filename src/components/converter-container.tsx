@@ -10,6 +10,7 @@ export const ConverterContainer = () => {
     function jsonToYaml() {
         console.log('yamlConverter is working')
         try {
+            console.log(fieldValues);
             const yamlString = yaml.dump(fieldValues);
             console.log(yamlString);
             return yamlString;

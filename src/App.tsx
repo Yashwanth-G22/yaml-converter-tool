@@ -1,10 +1,20 @@
 import React from 'react';
 import { ConverterContainer } from './components';
+import { connect } from 'react-redux';
+import { IncAction, DecAction } from './store/actions';
 
-function App() {
+function App({ variable, IncAction, DecAction }: { variable: any, IncAction: any, DecAction: any }) {
   return (
-    <ConverterContainer />
+    <>
+      <h3>Hlo</h3>
+      <h2>{variable}</h2>
+      <button onClick={() => IncAction(10)}>Increment</button>
+      <button onClick={() => DecAction(7)}>Decrement</button>
+    </>
   );
 }
 
-export default App;
+const mapStateToProps = (state: { state: any }) => ({
+  variable: state
+})
+export default connect(mapStateToProps, { IncAction, DecAction })(App);

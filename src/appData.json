@@ -1,0 +1,19 @@
+{
+    "name": "abc",
+    "city": "Bengaluru",
+    "age": 24,
+    "details": [
+        "element1",
+        true,
+        "element3"
+    ],
+    "qualification": "1st std",
+    "occupation": "President",
+    "hasVehicle": true,
+    "totalVehicles": 100,
+    "others": {
+        "test1": "test value1",
+        "test2": 456,
+        "sample3": false
+    }
+}

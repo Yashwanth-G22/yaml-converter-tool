@@ -13,7 +13,12 @@
     "totalVehicles": 100,
     "others": {
         "test1": "test value1",
-        "test2": 456,
-        "sample3": false
+        "test2": "test value2",
+        "ccc": {
+            "test1": "test value1",
+            "test2": "test value2",
+            "jfhjh": {
+                "test1": "test value1",
+                "test2": "test value2"
     }
 }

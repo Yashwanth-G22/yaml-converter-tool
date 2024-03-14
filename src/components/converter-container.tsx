@@ -8,9 +8,7 @@ export const ConverterContainer = () => {
     const [fieldValues, setFieldValues] = useState<{ [key: string]: any }>(jsonData);
 
     function jsonToYaml() {
-        console.log('yamlConverter is working')
         try {
-            console.log(fieldValues);
             const yamlString = yaml.dump(fieldValues);
             console.log(yamlString);
             return yamlString;
